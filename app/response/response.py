@@ -3,25 +3,23 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 from pydantic import BaseModel
 from app.file_upload.utils import generate_embedding
 from qdrant_client import QdrantClient
-from qdrant_client.http.models import Filter, FieldCondition, MatchValue
+from dotenv import load_dotenv
+import os
+
+
+load_dotenv()
+YOUR_API_KEY = os.getenv('YOUR_API_KEY')
 
 qdrant_host = "localhost"
 qdrant_port = 6333
 client = QdrantClient(host=qdrant_host, port=qdrant_port)
 
-YOUR_API_KEY = "AIzaSyBbn-o5unmTL_aZ86OPWoqPuvMlDTJ-WDc"
+
 
 router = APIRouter()
 
 class QueryRequest(BaseModel):
     query: str
-
-class QueryResponse(BaseModel):
-    chunk_id: int
-    document_id: str
-    title: str
-    content: str
-    score: float
 
 
 @router.post("/query")
@@ -38,20 +36,18 @@ def query(query: QueryRequest):
             limit=limit
         )
 
-        # Process and format the results
         responses = []
         for result in search_results:
             payload = result.payload
             responses.append(payload.get('content', ''))
 
-        # Initialize the Google Generative AI client
         llm = ChatGoogleGenerativeAI(
             google_api_key=YOUR_API_KEY,
             model="gemini-1.5-pro",
             temperature=0,
         )
 
-        # Construct the user prompt with query and retrieved results
+
         USER_PROMPT = f"Query: {query.query}\n\nResults:\n" + "\n".join(responses)
 
         SYSTEM_PROMPT = """
@@ -66,7 +62,7 @@ def query(query: QueryRequest):
             ("human", USER_PROMPT),
         ]
 
-        # Invoke the LLM
+      
         res = llm.invoke(messages)
 
         return {"response": res}
