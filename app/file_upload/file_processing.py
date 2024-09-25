@@ -3,6 +3,7 @@ import tempfile
 from fastapi import UploadFile
 from PyPDF2 import PdfReader
 import docx
+import csv
 
 async def process_uploaded_file(file: UploadFile) -> str:
     """Process the uploaded file and extract its content."""
@@ -19,14 +20,24 @@ async def process_uploaded_file(file: UploadFile) -> str:
                 content = extract_text_from_docx(temp_file_path)
             elif file_extension == "txt":
                 content = extract_text_from_txt(temp_file_path)
+            elif file_extension == "csv":
+                content = extract_text_from_csv(temp_file_path)
             else:
                 raise ValueError("Unsupported file type")
         except Exception as e:
             print(f"exception {str(e)}")
-        # finally:
-        #     os.remove(temp_file_path)
+        
 
     return content
+
+def extract_text_from_csv(file_path: str) -> str:
+    """Extract text from a CSV file."""
+    text = ""
+    with open(file_path, mode='r', newline='', encoding='utf-8') as file:
+        reader = csv.reader(file)
+        for row in reader:
+            text += " ".join(row) + "\n"
+    return text
 
 def extract_text_from_pdf(file_path: str) -> str:
     """Extract text from a PDF file."""

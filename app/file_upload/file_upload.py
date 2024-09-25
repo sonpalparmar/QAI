@@ -1,5 +1,4 @@
 from fastapi import APIRouter, HTTPException, UploadFile, File
-from app.model import DocumentIngestionRequest
 from app.file_upload.utils import generate_embedding, chunk_document, create_metadata
 from app.file_upload.file_processing import process_uploaded_file
 import uuid
@@ -12,7 +11,7 @@ router = APIRouter(prefix="/manage")
 qdrant_host = "localhost"
 qdrant_port = 6333
 
-# Create a QdrantClient instance
+
 client = QdrantClient(host=qdrant_host, port=qdrant_port)
 
 def ensure_collection_exists(collection_name: str, vector_size: int):

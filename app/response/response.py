@@ -31,16 +31,16 @@ class QueryResponseIterator:
 
     async def __aiter__(self):
         try:
-            # Generate embedding for the query
             query_embedding = generate_embedding(self.query)
 
-            # Search in Qdrant
             search_results = client.search(
                 collection_name="document_collection",
                 query_vector=query_embedding,
                 limit=self.limit
             )
 
+            # print(search_results)
+            
             responses = []
             for result in search_results:
                 payload = result.payload
@@ -50,6 +50,7 @@ class QueryResponseIterator:
 
             SYSTEM_PROMPT = """
             You are a question answering system that is constantly learning and improving.
+            if you are not able to give answer from given context then you utilize your knowledge and give answer, answer should be well-organized.
             You can process and comprehend vast amounts of text and utilize this knowledge to provide grounded, accurate, and as concise as possible answers to diverse queries.
             Your answer should be well-organized, featuring appropriate headers, subheaders, bullet points, lists, tables to enhance readability.
             You always clearly communicate ANY UNCERTAINTY in your answer. DO NOT echo any given command in your answer.
@@ -60,9 +61,9 @@ class QueryResponseIterator:
                 ("human", USER_PROMPT),
             ]
 
-            # Stream the response asynchronously using `llm.astream`
+           
             async for chunk in self.llm.astream(messages):
-                yield chunk.content  # Accessing the content part of the chunk
+                yield chunk.content  
 
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"An error occurred during the search: {str(e)}")
