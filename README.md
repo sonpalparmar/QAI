@@ -96,7 +96,7 @@ document-management-system/
 - **Content-Type**: multipart/form-data
 - **Parameters**: 
   - `file`: The document file to upload (PDF, DOCX, or TXT)
-- **Response**: JSON object with upload status and document ID
+- **Response**:  JSON object with upload status and document ID
 
 ### Search
 
