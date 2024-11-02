@@ -25,7 +25,7 @@ This project is a FastAPI-based application that allows users to upload document
 
 1. Clone the repository:
    ```
-   git clone https://github.com/sonpalparmar/document-management-system.git
+   git clone https://github.com/sonpalparmar/QAI.git
    cd document-management-system
    ```
 
