@@ -26,7 +26,7 @@ This project is a FastAPI-based application that allows users to upload document
 1. Clone the repository:
    ```
    git clone https://github.com/sonpalparmar/QAI.git
-   cd document-management-system
+   cd QAI
    ```
 
 2. Create a virtual environment and activate it:
